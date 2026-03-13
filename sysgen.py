@@ -1502,7 +1502,7 @@ class sysgen:
                     "UZ61025" : "Fixes RESETPL typo in SYS1.AMACLIB",
                     "JLM0005" : "Update IKJEFLPA TSO Date-Time subroutine",
                     "JLM0006" : "Update IKJEFT25 TSO TIME command",
-                    "SBL0001" : "TSO exit to verify JOBNAME STATUS, OUTPUT, and CANCEL, allows OPERATOR to cancel/purge jobs",
+                    "SLB0001" : "TSO exit to verify JOBNAME STATUS, OUTPUT, and CANCEL, allows OPERATOR to cancel/purge jobs",
                     }
 
         EBCDIC_mods = ['ZP60025']

@@ -47,7 +47,7 @@ usermods = ["AY12275","JLM0001","JLM0002","JLM0003","JLM0004","SLB0002","SYZM001
             "ZP60015","ZP60016","ZP60017","ZP60018","ZP60019","ZP60020","ZP60021","ZP60022","ZP60026", #usermods4.jcl
             "ZP60027","ZP60028","ZP60029","ZP60030","ZP60031","ZP60032","ZP60033","ZP60034","ZP60035", #usermods5.jcl
             "ZP60036","ZP60037","ZP60038","ZP60039","ZUM0007","ZUM0008",                               #usermods6.jcl
-            "SYZJ2001", "TNIP800", "ZP60025", "UZ61025","SLB0001","JLM0005", "JLM0006" #"DYNPROC"
+            "SYZJ2001", "TNIP800", "ZP60025", "UZ61025","SLB0001" #"DYNPROC"
             ]
 
 
@@ -1500,8 +1500,6 @@ class sysgen:
                     "TNIP800" : "Add support for user-defined system parameter PRISUB= to define primary subsystem name",
                     "ZP60041" : "Add support for indirect cataloging using VOLUME(******) (includes ZP60041, ZP60042, ZP60043)",
                     "UZ61025" : "Fixes RESETPL typo in SYS1.AMACLIB",
-                    "JLM0005" : "Update IKJEFLPA TSO Date-Time subroutine",
-                    "JLM0006" : "Update IKJEFT25 TSO TIME command",
                     "SLB0001" : "TSO exit to verify JOBNAME STATUS, OUTPUT, and CANCEL, allows OPERATOR to cancel/purge jobs",
                     }
 

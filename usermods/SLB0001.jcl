@@ -4,7 +4,7 @@
 //             MSGLEVEL=(1,1),
 //             REGION=4096K
 /*JOBPARM LINES=100
-//JOBLIB   DD  DISP=SHR,DSN=SYS1.LINKLIB
+//JOBCAT   DD  DSN=SYS1.VSAM.MASTER.CATALOG,DISP=SHR
 //*
 //*********************************************************************
 //* Install USERMOD SLB0001 (source: Shelby Beach) to install TSO     *
@@ -620,30 +620,16 @@ REJSLOT  DS    CL9
 //*
 //SMPASM02 EXEC SMPASM,M=IKJEFF53,COND=(0,NE)
 //*
-//RECEIVE EXEC SMPREC,WORK='SYSALLDA',COND=(0,NE)
-//SMPPTFIN DD *
+//RECV03   EXEC SMPAPP,COND=(0,NE),WORK='SYSALLDA'
+//SMPPTFIN DD  *
 ++USERMOD (SLB0001) .
 ++VER (Z038) FMID(EBB1102) .
 ++MOD(IKJEFF53) TXLIB(UMODOBJ) .
 /*
-//SMPCNTL  DD *
-* REJECT SELECT(SLB0001) .
-  RESETRC .
-  RECEIVE 
+//SMPCNTL  DD  *
+  RECEIVE
           SELECT(SLB0001)
           .
-/*
-//*
-//APPLYCK  EXEC SMPAPP,WORK='SYSALLDA',COND=(0,NE)
-//SMPCNTL  DD *
-  APPLY
-        SELECT(SLB0001)
-        CHECK
-        .
-/*
-//*
-//APPLY    EXEC SMPAPP,COND=(0,NE),WORK='SYSALLDA'
-//SMPCNTL  DD *
   APPLY
         SELECT(SLB0001)
         DIS(WRITE)

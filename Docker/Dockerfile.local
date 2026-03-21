@@ -1,10 +1,27 @@
-## Docker File for MVS/CE
-# This docker file is for use in github actions
-# To build this container yourself use Docker/Dockerfile.local
+# Build MVS/CE locally from source (two-stage build)
+# Run from the root of the sysgen repository:
+#   docker build -f Docker/Dockerfile.local -t mvsce:local .
+# Optionally pass a version label:
+#   docker build -f Docker/Dockerfile.local --build-arg RELEASE_VERSION=1.0.0 -t mvsce:local .
+
+# Stage 1: Run sysgen to build the MVS/CE system
+FROM mainframed767/hercules:latest AS sysgen
+USER root
+RUN apt-get update && \
+    apt-get -yq install --no-install-recommends git python3 apt-transport-https ca-certificates && \
+    apt-get clean && update-ca-certificates
+WORKDIR /sysgen
+COPY . /sysgen/
+ARG RELEASE_VERSION='local'
+# Sometimes sysgen fails at random points, run until it builds successfully
+RUN until ./sysgen.py --timeout 3600 --version ${RELEASE_VERSION} --CONTINUE; do echo "Failed, rerunning"; done
+
+# Stage 2: Build the runtime container
 FROM mainframed767/hercules:latest
 WORKDIR /
 USER root
-ADD MVSCE.release.tar /
+RUN rm -rf /MVSCE
+COPY --from=sysgen /sysgen/MVSCE /MVSCE
 COPY Docker/mvs.sh /
 RUN apt-get update && apt-get -yq install --no-install-recommends socat ca-certificates openssl python3 netbase git websockify && apt-get clean && chmod +x /mvs.sh
 # Install HercConsole into Hercules httproot

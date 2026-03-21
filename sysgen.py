@@ -1969,7 +1969,7 @@ class sysgen:
 
         logging.debug("Launching hercules: {}".format(self.herccmd))
 
-        self.hercproc = subprocess.Popen([self.herccmd],
+        self.hercproc = subprocess.Popen([self.herccmd, '--externalgui'],
                     stdin=subprocess.PIPE,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,

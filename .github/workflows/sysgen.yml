@@ -7,6 +7,8 @@ on:
     branches:
       - main
   workflow_dispatch:
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 jobs:
   mvsce-sysgen:
     name: MVS 3.8j System Generation
@@ -76,7 +78,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           file: Docker/Dockerfile.latest
           context: .

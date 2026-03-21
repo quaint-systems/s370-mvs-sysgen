@@ -19,6 +19,7 @@ if [ ! -f /config/local.cnf ]; then
     echo "" >> /config/local.cnf
     echo "#################################" >> /config/local.cnf
     echo "# Adding HTTP server for Docker" >> /config/local.cnf
+    echo 'HTTP   ROOT /home/hercules/herctest/herc4x/share/hercules/' >> /config/local.cnf
     echo 'HTTP   PORT 8888 AUTH ${HUSER:=hercules} ${HPASS:=hercules}' >> /config/local.cnf
     echo "HTTP   START" >> /config/local.cnf
 fi
@@ -82,6 +83,9 @@ echo "[*] Starting encrypted FTP listener on port 3221"
 ( socat openssl-listen:3221,cert=/certs/ftp.pem,verify=0,reuseaddr,fork tcp4:127.0.0.1:2121 ) &
 echo "[*] Starting encrypted TN3270 listener on port 3223"
 ( socat openssl-listen:3223,cert=/certs/3270.pem,verify=0,reuseaddr,fork tcp4:127.0.0.1:3270 ) &
+
+echo "[*] Starting TN3270 WebSocket proxy on port 3271 -> localhost:3270"
+websockify 3271 localhost:3270 &
 
 cd MVSCE
 echo "[*] Starting Hercules"

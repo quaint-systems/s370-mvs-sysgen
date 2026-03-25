@@ -4,7 +4,7 @@ backup/
 temp/
 start_mvs.sh
 release/
-sysgen/herclogo.txt
+sysgen/eoslogo.txt
 sysgen.log
 build/
 .step

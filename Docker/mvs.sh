@@ -88,5 +88,5 @@ echo "[*] Starting TN3270 WebSocket proxy on port 3271 -> localhost:3270"
 websockify 3271 localhost:3270 &
 
 cd MVSCE
-echo "[*] Starting Hercules"
-hercules -f /config/local.cnf -r conf/mvsce.rc --daemon > /logs/hercules.log
+echo "[*] Starting Eos"
+eos -f /config/local.cnf -r conf/mvsce.rc --daemon > /logs/eos.log

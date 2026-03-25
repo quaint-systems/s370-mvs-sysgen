@@ -32,9 +32,9 @@ error_check = [
                 'open error',
                 'Creating crash dump',
                 'DISASTROUS ERROR',
-                'HHC01023W Waiting for port 3270 to become free for console connections',
+                'EOS01023W Waiting for port 3270 to become free for console connections',
                 'disabled wait state 00020000 80000005',
-                'HHC00839E Processor CP00: ipl failed: architecture mode ESA/390, invalid ipl psw 0000000000000',
+                'EOS00839E Processor CP00: ipl failed: architecture mode ESA/390, invalid ipl psw 0000000000000',
                 'PROCESSOR CP00 APPEARS TO BE HUNG!'
               ]
 
@@ -132,7 +132,7 @@ POST_RAKF_JOB_CARD = ('''//{JOBNAME} JOB (SYSGEN),'{DESC}',
 class sysgen:
     ''' sysgen class to build hercules '''
     def __init__(self,
-                 hercbin='hercules',
+                 hercbin='eos',
                  config='sysgen.conf',
                  version=False,
                  username=False,
@@ -338,11 +338,11 @@ class sysgen:
                 if len(l.strip()) > 3 and l[0:2] == '/*' and l[2:4].isnumeric():
                     reply_num = l[2:4]
                     logging.debug("Reply number set to {}".format(reply_num))
-                if  "HHC90020W" not in l and "HHC00007I" not in l and "HHC00107I" not in l and "HHC00100I" not in l:
+                if  "EOS90020W" not in l and "EOS00007I" not in l and "EOS00107I" not in l and "EOS00100I" not in l:
                     # ignore these messages, they're just noise
-                    # HHC90020W 'hthread_setschedparam()' failed at loc=timer.c:193: rc=22: Invalid argument
-                    # HHC00007I Previous message from function 'hthread_set_thread_prio' at hthreads.c(1170)
-                    logging.debug("[HERCLOG] {}".format(l.strip()))
+                    # EOS90020W 'hthread_setschedparam()' failed at loc=timer.c:193: rc=22: Invalid argument
+                    # EOS00007I Previous message from function 'hthread_set_thread_prio' at hthreads.c(1170)
+                    logging.debug("[EOSLOG] {}".format(l.strip()))
                     q.put(l)
                     for errors in error_check:
                         if errors in l:
@@ -525,7 +525,7 @@ class sysgen:
         self.quit_hercules(msg=False)
         #self.unset_configs('build_starter')
         # Wait for the last item to be detached before continuing
-        #self.wait_for_string("HHC01603I detach {}".format(self.configs['build_starter'][-1].split()[0]))
+        #self.wait_for_string("EOS01603I detach {}".format(self.configs['build_starter'][-1].split()[0]))
         self.backup_dasd("01_build_starter")
 
         self.print("Build Starter System Complete",color="GREEN")
@@ -560,10 +560,10 @@ class sysgen:
         self.send_herc('attach 148 3350 MVSCE/DASD/smp000.3350')
         self.send_herc('attach 149 3350 MVSCE/DASD/work00.3350')
         self.send_herc('attach 14a 3350 MVSCE/DASD/work01.3350')
-        self.wait_for_string('HHC00414I 0:0148 CCKD file')
+        self.wait_for_string('EOS00414I 0:0148 CCKD file')
         self.print("Installing SMP 4.44")
         self.send_herc("devinit 12 jcl/smp4p44.jcl")
-        self.wait_for_string('HHC02245I 0:0012 device initialized')
+        self.wait_for_string('EOS02245I 0:0012 device initialized')
         self.send_herc('devinit 170 tape/zdlib1.het')
         self.wait_for_string("IEF238D SMP4P44 - REPLY DEVICE NAME OR 'CANCEL'.")
         self.send_reply('170')
@@ -587,7 +587,7 @@ class sysgen:
 
         self.check_maxcc(jobname='SMP4P44')
         self.shutdown_mvs()
-        #self.wait_for_string('HHC01603I detach 014A')
+        #self.wait_for_string('EOS01603I detach 014A')
         self.quit_hercules(msg=True)
         self.backup_dasd("02_install_smp4")
         if quit:
@@ -912,7 +912,7 @@ class sysgen:
         self.send_herc('attach 14a 3350 MVSCE/DASD/mvs000.3350')
         self.send_herc('attach 14b 3350 MVSCE/DASD/spool1.3350')
         self.send_herc('attach 14c 3350 MVSCE/DASD/page00.3350')
-        self.wait_for_string('HHC00414I 0:014C CCKD file')
+        self.wait_for_string('EOS00414I 0:014C CCKD file')
         self.print("Initializing target DASD volumes and preparing for System Generation")
         self.send_herc("devinit 12 jcl/sysgen00.jcl")
         self.wait_for_string("ICK003D REPLY U TO ALTER VOLUME 149 CONTENTS")
@@ -1638,7 +1638,7 @@ class sysgen:
         ]
         for i in dasd:
             self.send_herc('attach {}'.format(i))
-        self.wait_for_string("HHC00414I 0:0253 CCKD file MVSCE/DASD/syscpk.3350")
+        self.wait_for_string("EOS00414I 0:0253 CCKD file MVSCE/DASD/syscpk.3350")
         self.submit_file('jcl/mvs00.jcl')
 
         dev = ["180","190","220","221","222","223","224","225"]
@@ -1963,9 +1963,9 @@ class sysgen:
 
         if not self.herccmd:
             try:
-                self.hercmd = subprocess.check_output(["which", "hercules"]).strip()
+                self.hercmd = subprocess.check_output(["which", "eos"]).strip()
             except:
-                raise Exception('hercules not found')
+                raise Exception('eos not found')
 
         logging.debug("Launching hercules: {}".format(self.herccmd))
 
@@ -1998,7 +1998,7 @@ class sysgen:
         quit_herc_event.set()
         self.send_herc('quit')
         # self.wait_for_string('Hercules shutdown complete', stderr=True)
-        self.wait_for_strings(['Hercules terminated','dyngui.dll terminated'], stderr=True)
+        self.wait_for_strings(['Eos terminated','dyngui.dll terminated'], stderr=True)
         if msg:
             self.print('Hercules has exited')
 
@@ -2213,8 +2213,8 @@ class sysgen:
         v = self.git_hash
         if not self.git_hash:
             v = self.version
-        with open('conf/herclogo.template', 'r') as infile:
-            with open('MVSCE/herclogo.txt', 'w') as outfile:
+        with open('conf/eoslogo.template', 'r') as infile:
+            with open('MVSCE/eoslogo.txt', 'w') as outfile:
                 for i in infile.readlines():
                     outfile.write(i.replace("@@@@@VERSION@@@@@",v))
 
@@ -2268,7 +2268,7 @@ class sysgen:
         self.print("Creating: "+running_folder+"MVSCE/start_mvs.sh")
 
         with open(running_folder+"MVSCE/start_mvs.sh", 'w') as script:
-            script.write("#!/bin/bash\nhercules -f conf/local.cnf -r conf/mvsce.rc -o hercules.log")
+            script.write("#!/bin/bash\neos -f conf/local.cnf -r conf/mvsce.rc -o eos.log")
 
         os.chmod(running_folder+"MVSCE/start_mvs.sh",0o755)
 
@@ -2538,7 +2538,7 @@ def main():
     arg_parser.add_argument('--step', help="Restart sysgen from this step. The install will continue from here. Use --list to get a list of all steps/substeps.", choices=main_steps, default=False)
     arg_parser.add_argument('--substep', help="Restart sysgen from a steps substep. The install will continue from here. Use --list to get a list of all steps/substeps.", default=False)
     arg_parser.add_argument("--timeout", help="How long to wait for specific steps to finish in seconds before failing", default=1800)
-    arg_parser.add_argument("--hercules", help="Hercules binary", default='hercules')
+    arg_parser.add_argument("--hercules", help="Hercules/Eos binary", default='eos')
     arg_parser.add_argument("--no-compress", help="Do not compress DASD images", default=False, action="store_true")
     arg_parser.add_argument("--version", help="Specify a version string instead of using git version", default=False)
     arg_parser.add_argument("--username", help="Add an admin user (edit users.conf to customize all users)", default=False)

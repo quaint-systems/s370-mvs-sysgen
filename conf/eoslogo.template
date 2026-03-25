@@ -1,7 +1,7 @@
 @ALIGN NONE
 @SBA 0,0
 @SF P
-Hercules Version :
+Eos Version      :
 @SF HP
 $(VERSION)
 @NL

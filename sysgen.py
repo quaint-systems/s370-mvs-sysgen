@@ -1813,6 +1813,10 @@ class sysgen:
         self.send_reply('noreq')
         self.wait_for_string("$HASP099 ALL AVAILABLE FUNCTIONS COMPLETE")
 
+        # Diagnostic: display DASD volume status after IPL
+        self.send_oper('d u,dasd,online')
+        time.sleep(3)
+
     def shutdown_mvs(self, cust=False):
         logging.debug('Shutting down MVS')
         self.send_oper('$p jes2')
